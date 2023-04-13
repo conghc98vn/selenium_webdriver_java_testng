@@ -49,5 +49,6 @@ public class Topic_01_Check_Environment {
 		driver.quit();
 	}
 	
-	// Test update comment
+	// Test update name and email
+	
 }
