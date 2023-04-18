@@ -78,33 +78,33 @@ public class Topic_08_Web_Element_Commands {
 		Rectangle loginButtonRect = driver.findElement(By.id("")).getRect();
 		loginButtonSize = loginButtonRect.getDimension();
 		loginButtonLocation = loginButtonRect.getPoint();
-		
+
 		// Report HTML + Take Screenshow
 		File screenshotFile = driver.findElement(By.xpath("")).getScreenshotAs(OutputType.FILE);
 		String screenshotBase64 = driver.findElement(By.xpath("")).getScreenshotAs(OutputType.BASE64);
-		
-		// Lấy ra tên thẻ khi dùng các loại locator mà không biết trước tên thẻ là gì 
+
+		// Lấy ra tên thẻ khi dùng các loại locator mà không biết trước tên thẻ là gì
 		String searchTextboxTagname = driver.findElement(By.xpath("")).getTagName();
-		
+
 		// Đầu ra của một element trên sẽ là đầu vào của một elemnt dưới
 		driver.findElement(By.xpath("//" + searchTextboxTagname + "[@id='email']"));
-		
+
 		// Lấy ra text của chính nó và các thẻ con của nó
 		String benifitText = driver.findElement(By.xpath("")).getText();
-		
+
 		// Áp dụng cho tất cả các element
 		// 1 element có hiển thị trên màn hình hay không
 		// Nhìn thầy được/ có kích thước cụ thể
 		driver.findElement(By.xpath("")).isDisplayed();
-		
+
 		// Áp dụng cho tất cả element
 		// 1 element có thể thao tác lên được không (không bị disable) = read only
 		driver.findElement(By.xpath("")).isEnabled();
-		
+
 		// Áp dụng cho 3 loại element: checkbox/ radio/ dropdown (Select)
 		// 1 element đã được chọn rồi hay chưa
 		driver.findElement(By.xpath("")).isSelected();
-		
+
 		// Chỉ apple cho cái form/ element trong form
 		// Thay thể cho hành vi click vào button Login/ Register/ Search
 		driver.findElement(By.xpath("")).submit();
