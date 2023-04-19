@@ -60,19 +60,23 @@ public class Topic_13_Default_Dropbox {
 		driver.findElement(By.xpath("//input[@id='ConfirmPassword']")).sendKeys(password);
 		driver.findElement(By.xpath("//button[@id='register-button']")).click();
 		sleepInSecond(2);
-		
-		Assert.assertEquals(driver.findElement(By.xpath("//div[@class='result']")).getText(), "Your registration completed");
-		
+
+		Assert.assertEquals(driver.findElement(By.xpath("//div[@class='result']")).getText(),
+				"Your registration completed");
+
 		driver.findElement(By.xpath("//a[text()='Log in']")).click();
 		driver.findElement(By.xpath("//input[@id='Email']")).sendKeys(email);
 		driver.findElement(By.xpath("//input[@id='Password']")).sendKeys(password);
 		driver.findElement(By.xpath("//button[contains(@class, 'login-button')]")).click();
-		
+
 		driver.findElement(By.xpath("//a[@class='ico-account']")).click();
-		
-		Assert.assertEquals(new Select(driver.findElement(By.xpath("//select[@name='DateOfBirthDay']"))).getFirstSelectedOption().getText(), day);
-		Assert.assertEquals(new Select(driver.findElement(By.xpath("//select[@name='DateOfBirthMonth']"))).getFirstSelectedOption().getText(), month);
-		Assert.assertEquals(new Select(driver.findElement(By.xpath("//select[@name='DateOfBirthYear']"))).getFirstSelectedOption().getText(), year);
+
+		Assert.assertEquals(new Select(driver.findElement(By.xpath("//select[@name='DateOfBirthDay']")))
+				.getFirstSelectedOption().getText(), day);
+		Assert.assertEquals(new Select(driver.findElement(By.xpath("//select[@name='DateOfBirthMonth']")))
+				.getFirstSelectedOption().getText(), month);
+		Assert.assertEquals(new Select(driver.findElement(By.xpath("//select[@name='DateOfBirthYear']")))
+				.getFirstSelectedOption().getText(), year);
 	}
 
 	@AfterClass
@@ -87,5 +91,5 @@ public class Topic_13_Default_Dropbox {
 			e.printStackTrace();
 		}
 	}
-	
+
 }
