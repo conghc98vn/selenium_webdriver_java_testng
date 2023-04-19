@@ -84,7 +84,7 @@ public class Topic_09_Web_Browser_Excercise {
 
 	private void sleepInSecond(long timeout) {
 		try {
-			Thread.sleep(timeout);
+			Thread.sleep(timeout * 1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

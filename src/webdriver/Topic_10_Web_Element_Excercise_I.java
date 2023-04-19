@@ -156,7 +156,7 @@ public class Topic_10_Web_Element_Excercise_I {
 
 	private void sleepInSecond(long timeout) {
 		try {
-			Thread.sleep(timeout);
+			Thread.sleep(timeout * 1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

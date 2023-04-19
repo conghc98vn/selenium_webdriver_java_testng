@@ -11,7 +11,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class Topic_11_Textbox_TextArea {
+public class Topic_12_Textbox_Excercise {
 	WebDriver driver;
 	String projectPath = System.getProperty("user.dir");
 	String osName = System.getProperty("os.name");
@@ -37,41 +37,8 @@ public class Topic_11_Textbox_TextArea {
 		driver.manage().window().maximize();
 	}
 
-//	@Test
-	public void TC_01_Techpanda() {
-		driver.get("http://live.techpanda.org/");
-		driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
-		driver.findElement(By.xpath("//a[@title='Create an Account']/span")).click();
-
-		driver.findElement(By.xpath("//input[@id='firstname']")).sendKeys(firstName);
-		driver.findElement(By.xpath("//input[@id='lastname']")).sendKeys(lastName);
-		driver.findElement(By.xpath("//input[@id='email_address']")).sendKeys(emailAddress);
-		driver.findElement(By.xpath("//input[@id='password']")).sendKeys(password);
-		driver.findElement(By.xpath("//input[@id='confirmation']")).sendKeys(password);
-
-		driver.findElement(By.xpath("//button[@title='Register']")).click();
-
-		Assert.assertEquals(driver.findElement(By.xpath("//li[@class='success-msg']//span")).getText(),
-				"Thank you for registering with Main Website Store.");
-
-		Assert.assertTrue(driver.findElement(By
-				.xpath("//h3[text()='Contact Information']/parent::div/following-sibling::div[@class='box-content']/p"))
-				.getText().contains(firstName));
-		Assert.assertTrue(driver.findElement(By
-				.xpath("//h3[text()='Contact Information']/parent::div/following-sibling::div[@class='box-content']/p"))
-				.getText().contains(lastName));
-		Assert.assertTrue(driver.findElement(By
-				.xpath("//h3[text()='Contact Information']/parent::div/following-sibling::div[@class='box-content']/p"))
-				.getText().contains(emailAddress));
-
-		driver.findElement(By.xpath("//div[@class='account-cart-wrapper']//span[text()='Account']")).click();
-		driver.findElement(By.xpath("//a[text()='Log Out']")).click();
-
-		Assert.assertEquals(driver.getTitle(), "Magento Commerce");
-	}
-
 	@Test
-	public void TC_02_Ornage_HRM() {
+	public void TC_01_Ornage_HRM() {
 		String employeeID = "";
 		String userNameAdmin = "Admin";
 		String passwordAdmin = "admin123";
