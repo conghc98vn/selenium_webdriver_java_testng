@@ -79,12 +79,4 @@ public class Topic_10_Web_Element_Excercise_II {
 		driver.quit();
 	}
 
-	private void sleepInSecond(long timeout) {
-		try {
-			Thread.sleep(timeout);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
 }
