@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -26,10 +27,10 @@ public class Topic_25_Wait_Element_Status {
 		}
 
 		driver = new FirefoxDriver();
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 
-		explicitWait = new WebDriverWait(driver, 30);
+		explicitWait = new WebDriverWait(driver, 5);
 	}
 
 	@Test
@@ -68,7 +69,7 @@ public class Topic_25_Wait_Element_Status {
 
 		// Điều kiện 1: Element có trên giao diện (UI) và có trong HTML
 		explicitWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@name='login']")));
-		driver.findElement(By.xpath("//a[@data-testid='open-registration-form-button']"));
+		driver.findElement(By.xpath("//a[@data-testid='open-registration-form-button']")).click();
 
 		// Điều kiện 2: Element không có trên UI nhưng vẫn có trong HTML
 		explicitWait.until(
@@ -80,16 +81,18 @@ public class Topic_25_Wait_Element_Status {
 	public void TC_05_Staless() {
 		driver.get("https://www.facebook.com/");
 
-		driver.findElement(By.xpath("//a[@data-testid='open-registration-form-button']"));
+		driver.findElement(By.xpath("//a[@data-testid='open-registration-form-button']")).click();
 
+		WebElement comfirmEmailTextbox = driver.findElement(By.xpath("//input[@name='reg_email_confirmation__']"));
+		
 		// Tại thời điểm này nó đang có trong HTML
-		driver.findElement(By.xpath("//a[@data-testid='open-registration-form-button']"));
+		driver.findElement(By.xpath("//div[@class='_8ien']/img")).click();
 
 		// Wait cho Confirm Email textbox không còn trong HTML nữa
 		explicitWait.until(ExpectedConditions
-				.invisibilityOfElementLocated(By.xpath("\"//input[@name='reg_email_confirmation__']\"")));
+				.invisibilityOf(comfirmEmailTextbox));
 		explicitWait.until(ExpectedConditions
-				.stalenessOf(driver.findElement(By.xpath("\"//input[@name='reg_email_confirmation__']\""))));
+				.stalenessOf(comfirmEmailTextbox));
 
 	}
 
