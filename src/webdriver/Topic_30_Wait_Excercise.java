@@ -1,5 +1,8 @@
 package webdriver;
 
+import static org.testng.Assert.assertEquals;
+
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +23,14 @@ public class Topic_30_Wait_Excercise {
 	String osName = System.getProperty("os.name");
 	WebDriverWait explicitWait;
 
+	String hueCity = "hue.jpg";
+	String nhatrangCity = "nhatrang.jpg";
+	String quynhonCity = "quynhon.jpg";
+
+	String hueCityPath = projectPath + File.separator + "uploadFiles" + File.separator + hueCity;
+	String nhatrangCityPath = projectPath + File.separator + "uploadFiles" + File.separator + nhatrangCity;
+	String quynhonCityPath = projectPath + File.separator + "uploadFiles" + File.separator + quynhonCity;
+
 	@BeforeClass
 	public void beforeClass() {
 		if (osName.contains("Windows")) {
@@ -35,99 +46,122 @@ public class Topic_30_Wait_Excercise {
 		explicitWait = new WebDriverWait(driver, 10);
 	}
 
-	@Test
-	public void TC_01_() {
-		driver.get("https://www.facebook.com/");
+//	@Test
+	public void TC_01_Visible() {
+		driver.get("https://automationfc.github.io/dynamic-loading/");
 
-		// Chờ cho 1 attribute có value
-		// Dùng trước hàm getAtrribute()
-		explicitWait
-				.until(ExpectedConditions.attributeContains(By.id("login_username"), "placeholder", "số điện thoại"));
+		driver.findElement(By.cssSelector("div#start>button")).click();
+
+		// Wait for Helloworld text visible(xuất hiện)
+		explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#finish>h4")));
+
+		String helloText = driver.findElement(By.cssSelector("div#finish>h4")).getText();
+
+		Assert.assertEquals(helloText, "Hello World!");
+	}
+
+//	@Test
+	public void TC_02_Invisible() {
+		driver.get("https://automationfc.github.io/dynamic-loading/");
+
+		driver.findElement(By.cssSelector("div#start>button")).click();
+
+		// Wait for Loading icon invisible(xuất hiện)
+		// Khi 1 cái này biến mất thì cái kia sẽ xuất hiện hoặc ngược lại
+		explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div#loading")));
+
+		String helloText = driver.findElement(By.cssSelector("div#finish>h4")).getText();
+
+		Assert.assertEquals(helloText, "Hello World!");
+	}
+
+//	@Test
+	public void TC_03_Text() {
+		driver.get("https://automationfc.github.io/dynamic-loading/");
+
+		driver.findElement(By.cssSelector("div#start>button")).click();
+
+		// Wait for Loading icon invisible(xuất hiện)
+		// Khi 1 cái này biến mất thì cái kia sẽ xuất hiện hoặc ngược lại
+		explicitWait.until(ExpectedConditions.textToBe(By.cssSelector("div#finish>h4"), ("Hello World!")));
+
+		String helloText = driver.findElement(By.cssSelector("div#finish>h4")).getText();
+
+		Assert.assertEquals(helloText, "Hello World!");
+	}
+
+//	@Test
+	public void TC_04_Telerik() {
+		driver.get(
+				"https://demos.telerik.com/aspnet-ajax/ajaxloadingpanel/functionality/explicit-show-hide/defaultcs.aspx");
+
+		// Wait cho Data Picker visible
 		explicitWait.until(
-				ExpectedConditions.attributeContains(By.id("login_username"), "placeholder", "Nhập số điện thoại"));
+				ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#ctl00_ContentPlaceholder1_Panel1")));
 
-		// Chờ cho 1 element có thể được click hay không: button/ checkbox/ radio/ link/
-		// image
-		// Dùng trước hàm click()
-		explicitWait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".fhs-btn-login")));
+		// Wait và verify cho Locator chứa text
+		Assert.assertTrue(explicitWait.until(ExpectedConditions
+				.textToBe(By.cssSelector("span#ctl00_ContentPlaceholder1_Label1"), ("No Selected Dates to display."))));
 
-		// Chờ cho 1 element đã được chọn hay chưa: checkbox/ radio
-		// Dùng trước khi apply isSelected()
-		explicitWait.until(ExpectedConditions.elementToBeSelected(By.cssSelector("input[name='sex']")));
+		// Wait cho ngày được click
+		explicitWait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='11']/parent::td"))).click();
 
-		// Chờ cho frame xuất hiện và swtich vào frame đó
-		explicitWait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.cssSelector("")));
+		// Wait cho loading icon biến mất
+//		explicitWait.until(ExpectedConditions.invisibilityOfElementLocated());
 
-		// Chờ cho 1 element không còn visible nữa
-		explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("")));
+		// Wait và verify cho Locator chứa text
+		Assert.assertTrue(explicitWait.until(ExpectedConditions
+				.textToBe(By.cssSelector("span#ctl00_ContentPlaceholder1_Label1"), ("Sunday, June 11, 2023"))));
+	}
 
-		// Chờ cho nhiều element không còn visible nữa
-		explicitWait.until(ExpectedConditions.invisibilityOfAllElements(driver.findElements(By.cssSelector(""))));
+	@Test
+	public void TC_05_Upload() {
+		driver.get("https://gofile.io/?t=uploadFiles");
 
-		// Var Arguments
-		explicitWait.until(ExpectedConditions.invisibilityOfAllElements(driver.findElements(By.cssSelector(""))));
-		explicitWait.until(ExpectedConditions.invisibilityOfAllElements(driver.findElement(By.cssSelector("")),
-				driver.findElement(By.cssSelector(""))));
+		By uploadFileBy = By.cssSelector("input#filesUploadInput");
 
-		// Chờ cho các element nó có tổng số lượng là bao nhiều
-		// Bằng
-		explicitWait.until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(""), 3));
+		// Wait cho tất cả incon loading biến mất
+		Assert.assertTrue(explicitWait
+				.until(ExpectedConditions.invisibilityOfAllElements(driver.findElements(By.cssSelector("div.spinner-border")))));
 
-		// Ít hơn
-		explicitWait.until(ExpectedConditions.numberOfElementsToBeLessThan(By.cssSelector(""), 3));
+		explicitWait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Upload Files']")))
+				.click();
 
-		// Nhiều hơn
-		explicitWait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.cssSelector(""), 3));
+		// Wait cho tất cả các icon loading biến mất
+		Assert.assertTrue(explicitWait
+				.until(ExpectedConditions.invisibilityOfAllElements(driver.findElements(By.cssSelector("div.spinner-border")))));
 
-		// Lấy ra số lượng element bằng bao nhiêu
-		int radioNumber = driver.findElements(By.cssSelector("")).size();
+		// Upload 3 file lên
+		driver.findElement(uploadFileBy).sendKeys(hueCityPath + "\n" + nhatrangCityPath + "\n" + quynhonCityPath);
 
-		// Thao tác và nó bật ra các tab/ window
-		// Chờ cho bao nhiều cửa sổ/ tab được xuất hiện
-		boolean windowActive = explicitWait.until(ExpectedConditions.numberOfWindowsToBe(4));
+		// Wait cho tất cả upload biến mất
+		Assert.assertTrue(explicitWait
+				.until(ExpectedConditions.invisibilityOfAllElements(driver.findElements(By.cssSelector("div.spinner-border")))));
 
-		// Chờ cho element nó có trong HTML (không cần quan tâm visible hay không)
-		// Dropdown (item)
-		explicitWait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("")));
+		// Wait for text
+		Assert.assertTrue(explicitWait.until(
+				ExpectedConditions.textToBe(By.xpath("//div[@class='row justify-content-center mainUploadSuccess']"),
+						("Your files have been successfully uploaded"))));
 
-		WebElement loginUsernameTextbox = explicitWait.until(
-				ExpectedConditions.presenceOfNestedElementLocatedBy(By.cssSelector("parent"), By.cssSelector("child")));
+		driver.findElement(By.xpath("//div[@class='row mb-2 mainUploadSuccessLink']//a")).click();
 
-		List<WebElement> loginTextboxes = explicitWait.until(ExpectedConditions
-				.presenceOfNestedElementsLocatedBy(By.cssSelector("parent"), By.cssSelector("child")));
+		// Wait cho tất cả icon loading biến mất
+		Assert.assertTrue(explicitWait
+				.until(ExpectedConditions.invisibilityOfAllElements(driver.findElements(By.cssSelector("div.spinner-border")))));
 
-		// Chờ cho 1 element không còn trong HTML nữa
-		explicitWait.until(ExpectedConditions.stalenessOf(driver.findElement(By.cssSelector(""))));
-
-		// Chờ và verify cho 1 element không còn trong HTML nữa
-		Assert.assertTrue(explicitWait.until(ExpectedConditions.stalenessOf(driver.findElement(By.xpath("")))));
-
-		// Trước hàm getText()
-		explicitWait.until(ExpectedConditions.textToBe(By.cssSelector(""), "value"));
-		explicitWait.until(ExpectedConditions.textToBePresentInElementValue(By.cssSelector(""), "value"));
-		explicitWait.until(ExpectedConditions.textToBePresentInElementValue(By.cssSelector(""), "value"));
-
-		// Dùng trước hàm getTitle()
-		explicitWait.until(ExpectedConditions.titleContains("Fahasa.com"));
-		explicitWait.until(ExpectedConditions.titleIs("https://fahasa.com"));
-
-		// Dùng trước hàm getCurrentUrl()
-		explicitWait.until(ExpectedConditions.urlContains("hasa.com"));
-		explicitWait.until(ExpectedConditions.urlToBe("https://fahasa.com"));
-
-		// Chờ cho 1 element được hiển thị
-		WebElement element = driver.findElement(By.cssSelector(""));
-		explicitWait.until(ExpectedConditions.visibilityOf(element));
-
-		explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("")));
-
-		// Chờ cho nhiều element được hiển thị
-		explicitWait.until(ExpectedConditions.visibilityOfAllElements(driver.findElement(By.xpath(""))));
-		explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("")));
-
-		// Chờ cho 1 element được hiển thị
-		explicitWait.until(ExpectedConditions.visibilityOfNestedElementsLocatedBy(By.cssSelector("parent"),
-				By.cssSelector("child")));
+		Assert.assertTrue(explicitWait
+				.until(ExpectedConditions
+						.visibilityOfElementLocated(By.xpath("//span[@class='contentName' and text()='" + hueCity + "']")))
+				.isDisplayed());
+		Assert.assertTrue(explicitWait
+				.until(ExpectedConditions
+						.visibilityOfElementLocated(By.xpath("//span[@class='contentName' and text()='" + nhatrangCity + "']")))
+				.isDisplayed());
+		Assert.assertTrue(explicitWait
+				.until(ExpectedConditions
+						.visibilityOfElementLocated(
+								By.xpath("//span[@class='contentName' and text()='" + quynhonCity + "']")))
+				.isDisplayed());
 	}
 
 	@AfterClass
