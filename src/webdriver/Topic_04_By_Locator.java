@@ -109,7 +109,7 @@ public class Topic_04_By_Locator {
 	}
 
 	@Test
-	public void TC_08_() {
+	public void TC_08_Xpath() {
 		// Xpath vs id
 		driver.findElement(By.xpath("//input[@id='email']"));
 
