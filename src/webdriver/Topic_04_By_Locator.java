@@ -66,7 +66,7 @@ public class Topic_04_By_Locator {
 
 	@Test
 	public void TC_04_TagName() {
-		// Vẻify xem 1 page có bao nhiêu element giống nhau: link/ button/ radio/
+		// Verify xem 1 page có bao nhiêu element giống nhau: link/ button/ radio/
 		// textbox
 		driver.findElement(By.tagName("a"));
 	}
