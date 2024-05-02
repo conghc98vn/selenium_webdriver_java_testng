@@ -1,31 +1,32 @@
 package webdriver;
 
-import java.io.File;
+import java.time.Duration;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.google.common.base.Function;
 
 public class Topic_32_Wait_Fluent {
 	WebDriver driver;
 	String projectPath = System.getProperty("user.dir");
 	String osName = System.getProperty("os.name");
 	WebDriverWait explicitWait;
+	FluentWait<WebDriver> fluentWait;
 
-	String hueCity = "hue.jpg";
-	String nhatrangCity = "nhatrang.jpg";
-	String quynhonCity = "quynhon.jpg";
-
-	String hueCityPath = projectPath + File.separator + "uploadFiles" + File.separator + hueCity;
-	String nhatrangCityPath = projectPath + File.separator + "uploadFiles" + File.separator + nhatrangCity;
-	String quynhonCityPath = projectPath + File.separator + "uploadFiles" + File.separator + quynhonCity;
+	long durationTime = 30;
+	long pollingTime = 1;
 
 	@BeforeClass
 	public void beforeClass() {
@@ -43,144 +44,113 @@ public class Topic_32_Wait_Fluent {
 	}
 
 	@Test
-	public void TC_01_Element_Found() {
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+	public void TC_01_() {
+		driver.get("https://automationfc.github.io/dynamic-loading/");
 
-		explicitWait = new WebDriverWait(driver, 3);
+		driver.findElement(By.xpath("//div[@id='start']/button"));
 
-		// Dùng cả 2 loại nhưng element được tìm thấy
-		// Không có ngoại lệ xảy ra - happy case
-		driver.get("https://www.facebook.com/");
+		fluentWait = new FluentWait<WebDriver>(driver);
 
-		// Implicit
-		System.out.println("1 - Start: " + getDateTimeNow());
-		driver.findElement(By.cssSelector("input#email"));
-		System.out.println("2 - End: " + getDateTimeNow());
+		// Set timeout tổng time bằng bao nhiêu
+		fluentWait.withTimeout(Duration.ofSeconds(5))
 
-		// Explicit
-		System.out.println("1 - Start: " + getDateTimeNow());
-		explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("input#email")));
-		System.out.println("2 - End: " + getDateTimeNow());
+				// Polling/ interval time: lặp lại
+				.pollingEvery(Duration.ofMillis(200))
+
+				// Ignoring exception nếu không tìm thấy element
+				.ignoring(NoSuchElementException.class);
+
+		// ĐIều kiện để wait
+		// Wait cho element có locator này isDisplayed()
+		// //div[@id='finish']/h4[text()='Hello World!']
+		boolean textStatus = fluentWait.until(new Function<WebDriver, Boolean>() {
+
+			@Override
+			public Boolean apply(WebDriver driver) {
+				return driver.findElement(By.xpath("//div[@id='finish']/h4[text()='Hello World!']")).isDisplayed();
+			}
+
+		});
+
+		Assert.assertTrue(textStatus);
+
+		// Wait cho element có cái text -> getText()
+		// //div[@id='finish']/h4
+		String helloText = fluentWait.until(new Function<WebDriver, String>() {
+
+			@Override
+			public String apply(WebDriver driver) {
+				return driver.findElement(By.xpath("//div[@id='finish']/h4")).getText();
+			}
+
+		});
+
+		Assert.assertEquals(helloText, "Hello World!");
+
 	}
 
 	@Test
-	public void TC_02_Element_Not_Found_Only_Implicit() {
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+	public void TC_02_() {
+		driver.get("https://automationfc.github.io/fluent-wait/");
 
-		driver.get("https://www.facebook.com/");
+		fluentWait = new FluentWait<WebDriver>(driver);
 
-		// Implicit
-		// Không tim Element
-		// Đánh fail testcase tại step findElement
-		// Chờ hết time của implicit
-		System.out.println("1 - Start: " + getDateTimeNow());
-		driver.findElement(By.cssSelector("input#automation"));
-		System.out.println("2 - End: " + getDateTimeNow());
+		fluentWait.withTimeout(Duration.ofSeconds(15)).pollingEvery(Duration.ofMillis(300))
+				.ignoring(NoSuchElementException.class);
+
+		boolean textStatus = fluentWait.until(new Function<WebDriver, Boolean>() {
+
+			@Override
+			public Boolean apply(WebDriver driver) {
+				String text = driver.findElement(By.cssSelector("div#javascript_countdown_time")).getText();
+				System.out.println(text);
+				return text.equals("01:01:00");
+			}
+		});
+
+		Assert.assertTrue(textStatus);
 	}
 
-	@Test
-	public void TC_03_Element_Not_Found_Only_Explicit() {
-		explicitWait = new WebDriverWait(driver, 3);
+	public WebElement findWebElement(By by) {
+		fluentWait = new FluentWait<WebDriver>(driver);
+		fluentWait.withTimeout(Duration.ofSeconds(durationTime)).pollingEvery(Duration.ofSeconds(pollingTime))
+				.ignoring(NoSuchElementException.class);
 
-		driver.get("https://www.facebook.com/");
+		return fluentWait.until(new Function<WebDriver, WebElement>() {
 
-		// Explicit
-		// Chờ hết 10s rồi đánh fail testcase tại step dòng code số 75
-		// Show ra exception
-		System.out.println("1 - Start: " + getDateTimeNow());
-		explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("input#automation")));
-		System.out.println("2 - End: " + getDateTimeNow());
+			@Override
+			public WebElement apply(WebDriver driver) {
+				return driver.findElement(by);
+			}
+		});
 	}
 
-	@Test
-	public void TC_04_Element_Not_Found_Implicit_Explicit_Equal() {
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		explicitWait = new WebDriverWait(driver, 10);
-		driver.get("https://www.facebook.com/");
+	public String getElement(By by) {
+		fluentWait = new FluentWait<WebDriver>(driver);
+		fluentWait.withTimeout(Duration.ofSeconds(durationTime)).pollingEvery(Duration.ofSeconds(pollingTime))
+				.ignoring(NoSuchElementException.class);
 
-		// Mấu chốt: Luôn luôn ưu tiên implicit trước
-		// Tìm được element rồi mới làm gì thì làm
+		return fluentWait.until(new Function<WebDriver, String>() {
 
-		// Explicit
-		// Bị áp dụng cả 2 laoij wait trong step này
-		// 10s của implicit cho findElement
-		// 10s của explicit cho điều kiện
-		System.out.println("1 - Start: " + getDateTimeNow());
-		try {
-			explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("input#email")));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("2 - End: " + getDateTimeNow());
+			@Override
+			public String apply(WebDriver driver) {
+				return driver.findElement(by).getText();
+			}
+		});
 	}
 
-	@Test
-	public void TC_05_Element_Not_Found_Implicit_Less_Than_Explicit() {
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		explicitWait = new WebDriverWait(driver, 10);
-		driver.get("https://www.facebook.com/");
+	public Boolean isElementDisplayed(By by) {
+		fluentWait = new FluentWait<WebDriver>(driver);
+		fluentWait.withTimeout(Duration.ofSeconds(durationTime)).pollingEvery(Duration.ofSeconds(pollingTime))
+				.ignoring(NoSuchElementException.class);
 
-		// Mấu chốt: Luôn luôn ưu tiên implicit trước
-		// Tìm được element rồi mới làm gì thì làm
+		return fluentWait.until(new Function<WebDriver, Boolean>() {
 
-		// Explicit
-		// Bị áp dụng cả 2 laoij wait trong step này
-		// 10s của implicit cho findElement
-		// 10s của explicit cho điều kiện
-		System.out.println("1 - Start: " + getDateTimeNow());
-		try {
-			// Việc findElement (apply implicit timeout nó nằm trong hàm cua
-			// explicit(visiblilityOfElementLocated))
-			explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("input#email")));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("2 - End: " + getDateTimeNow());
-	}
-
-	@Test
-	public void TC_06_Element_Not_Found_Implicit_Greater_Than_Explicit() {
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		explicitWait = new WebDriverWait(driver, 5);
-		driver.get("https://www.facebook.com/");
-
-		// Mấu chốt: Luôn luôn ưu tiên implicit trước
-		// Tìm được element rồi mới làm gì thì làm
-
-		// Explicit
-		// Bị áp dụng cả 2 laoij wait trong step này
-		// 10s của implicit cho findElement
-		// 10s của explicit cho điều kiện
-		System.out.println("1 - Start: " + getDateTimeNow());
-		try {
-			explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("input#email")));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("2 - End: " + getDateTimeNow());
-	}
-
-	@Test
-	public void TC_07_() {
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		explicitWait = new WebDriverWait(driver, 10);
-		driver.get("https://www.facebook.com/");
-
-		// Mấu chốt: Luôn luôn ưu tiên implicit trước
-		// Tìm được element rồi mới làm gì thì làm
-
-		// Explicit
-		// Bị áp dụng cả 2 laoij wait trong step này
-		// 10s của implicit cho findElement
-		// 10s của explicit cho điều kiện
-		System.out.println("1 - Start: " + getDateTimeNow());
-		try {
-			// Explicit có những hàm có tham số là By/ WebElement (cùng 1 chức năng như nhau)
-			explicitWait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector("input#email"))));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("2 - End: " + getDateTimeNow());
+			@Override
+			public Boolean apply(WebDriver driver) {
+				return driver.findElement(by).isDisplayed();
+			}
+		});
 	}
 
 	@AfterClass
