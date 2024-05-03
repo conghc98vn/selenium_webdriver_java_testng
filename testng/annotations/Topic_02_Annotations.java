@@ -8,12 +8,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
 
 public class Topic_02_Annotations {
-	@Test(dataProvider = "dp")
-	public void f(Integer n, String s) {
-	}
 
 	@BeforeMethod
 	public void beforeMethod() {
